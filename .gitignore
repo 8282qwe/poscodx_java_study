@@ -1,3 +1,4 @@
 # 프로젝트 제외 경로
 /practice01/target/
+/practice02/target
 .idea
