@@ -32,19 +32,19 @@ public class TV {
     }
 
     public void channel(int channel) {
-        this.channel = channel > 255 ? channel - 255 : channel;
+        this.channel = channel > 255 ? 1 : (channel < 1 ? 255 : channel);
     }
 
     public void channel(boolean up) {
-        this.channel(up?++channel:--channel);
+        this.channel(up ? ++channel : --channel);
     }
 
     public void volume(int volume) {
-        this.volume = volume > 100 ? volume - 100 : volume;
+        this.volume = volume > 100 ? 0 : (volume < 0 ? 100 : volume);
     }
 
     public void volume(boolean up) {
-        this.volume(up?++volume:--volume);
+        this.volume(up ? ++volume : --volume);
     }
 
     public void status() {
