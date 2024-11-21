@@ -39,6 +39,7 @@ public class Sol06 {
                 gameCount++;
             }
 
+            System.out.println("맞췄습니다.");
             System.out.println("정답은 : "+correctNumber+"입니다.");
             //새 게임 여부 확인하기
             System.out.print("다시 하겠습니까(y/n)>>");
