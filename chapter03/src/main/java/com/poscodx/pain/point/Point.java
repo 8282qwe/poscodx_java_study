@@ -1,6 +1,8 @@
-package shape;
+package com.poscodx.pain.point;
 
-public class Point {
+import com.poscodx.pain.i.Drawable;
+
+public class Point implements Drawable {
     private int x;
     private int y;
 
@@ -36,5 +38,10 @@ public class Point {
         if (visible) {
             this.show();
         } else System.out.printf("점[x=%d,y=%d]을 지웠습니다.\n", x, y);
+    }
+
+    @Override
+    public void draw() {
+        show();
     }
 }

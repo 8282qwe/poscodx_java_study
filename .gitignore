@@ -1,4 +1,8 @@
 # 프로젝트 제외 경로
 /practice01/target/
 /practice02/target/
+/**/target
+**.class
 .idea
+/practice05/target/
+/practice04/target/
