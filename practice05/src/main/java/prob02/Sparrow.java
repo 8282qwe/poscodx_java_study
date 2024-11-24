@@ -8,7 +8,7 @@ public class Sparrow extends Bird{
 
     @Override
     void sing() {
-        System.out.printf("오리(%s)는 소리내어 웁니다.\n",name);
+        System.out.printf("참새(%s)는 소리내어 웁니다.\n",name);
     }
 
     @Override
