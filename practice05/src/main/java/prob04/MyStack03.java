@@ -1,24 +1,24 @@
 package prob04;
 
-public class MyStack {
+public class MyStack03<T> {
     private int top;
-    private String[] buffer;
+    private T[] buffer;
 
-    public MyStack(int capacity) {
+    public MyStack03(int capacity) {
         /* 구현하기 */
         this.top = -1;
-        this.buffer = new String[capacity];
+        this.buffer = (T[]) new Object[capacity];
     }
 
-    public void push(String s) {
+    public void push(Object s) {
         /* 구현하기 */
         if (top == buffer.length - 1) {
             resize();
         }
-        buffer[++top] = s;
+        buffer[++top] = (T) s;
     }
 
-    public String pop() throws MyStackException {
+    public T pop() throws MyStackException {
         /* 구현하기 */
         if (isEmpty()) {
             throw new MyStackException();
@@ -33,9 +33,8 @@ public class MyStack {
 
     private void resize() {
         /* 구현하기 */
-        String[] newBuffer = new String[buffer.length * 2];
+        T[] newBuffer = (T[])new Object[buffer.length * 2];
         System.arraycopy(buffer, 0, newBuffer, 0, buffer.length);
         buffer = newBuffer;
-
     }
 }
