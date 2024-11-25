@@ -1,5 +1,7 @@
 package prob06;
 
+import java.util.Objects;
+
 public class Money {
 	private int amount;
 	
@@ -27,7 +29,14 @@ public class Money {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Money && ((Money) obj).getAmount() == amount;
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		Money money = (Money) o;
+		return amount == money.amount;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(amount);
 	}
 }
