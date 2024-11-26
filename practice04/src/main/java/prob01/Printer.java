@@ -13,7 +13,8 @@ public class Printer {
         return Arrays.stream(nums).mapToInt(i -> i).sum();
     }
 
-    public <T> void println(T... ts) {
+    @SafeVarargs
+    public final <T> void println(T... ts) {
         Arrays.stream(ts).forEach(System.out::println);
     }
 
