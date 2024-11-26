@@ -6,3 +6,6 @@
 /practice04/target/
 /practice05/target/
 .idea
+
+*.png
+*.txt
