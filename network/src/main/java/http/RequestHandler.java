@@ -54,16 +54,7 @@ public class RequestHandler extends Thread {
             } else {
                 // method : POST, DELETE, PUT, HEAD, CONNECT, ...
                 // (현재 SimpleHttpServer에서는 무시) GET method 이외의 것이 들어온 경우, Bad Request(400) 응답
-                // nio
-                File file = new File(BASE_URL+"/error/400.html");
-                byte[] body = Files.readAllBytes(file.toPath());
-                String contentType = Files.probeContentType(file.toPath());
-
-                outputStream.write((tokens[2] + " 400 Bad Request\n").getBytes(StandardCharsets.UTF_8));
-                outputStream.write(("Content-Type:"+contentType+"; charset=utf-8\n").getBytes(StandardCharsets.UTF_8));
-                outputStream.write("\n".getBytes());
-                outputStream.write(body);
-
+                responseErrorResources(outputStream, 400, "Bad Request", tokens[2]);
             }
         } catch (Exception ex) {
             consoleLog("error:" + ex);
@@ -86,14 +77,7 @@ public class RequestHandler extends Thread {
 
         if (!file.exists()) {
             // 404 response
-            file = new File(BASE_URL+"/error/404.html");
-            byte[] body = Files.readAllBytes(file.toPath());
-
-            String contentType = Files.probeContentType(file.toPath());
-            os.write((protocol + " 404 Not Found\n").getBytes(StandardCharsets.UTF_8));
-            os.write(("Content-Type:"+contentType+"; charset=utf-8\n").getBytes(StandardCharsets.UTF_8));
-            os.write("\n".getBytes());
-            os.write(body);
+            responseErrorResources(os, 404, "Not Found", protocol);
             return;
         }
 
@@ -102,6 +86,17 @@ public class RequestHandler extends Thread {
         String contentType = Files.probeContentType(file.toPath());
 
         os.write((protocol + " 200 OK\n").getBytes(StandardCharsets.UTF_8));
+        os.write(("Content-Type:" + contentType + "; charset=utf-8\n").getBytes(StandardCharsets.UTF_8));
+        os.write("\n".getBytes());
+        os.write(body);
+    }
+
+    private void responseErrorResources(OutputStream os, int errorCode, String errorName, String protocol) throws IOException {
+        File file = new File(BASE_URL + "/error/" + errorCode + ".html");
+        byte[] body = Files.readAllBytes(file.toPath());
+        String contentType = Files.probeContentType(file.toPath());
+
+        os.write((protocol + " " + errorCode + " " + errorName + "\n").getBytes(StandardCharsets.UTF_8));
         os.write(("Content-Type:" + contentType + "; charset=utf-8\n").getBytes(StandardCharsets.UTF_8));
         os.write("\n".getBytes());
         os.write(body);
