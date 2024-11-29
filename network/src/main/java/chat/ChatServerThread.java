@@ -157,7 +157,7 @@ public class ChatServerThread extends Thread {
                 return String.join(":", "SUCCESS");
             }
         }
-        return null;
+        return String.join(":", "ERROR");
     }
 
     private String roomList() {
