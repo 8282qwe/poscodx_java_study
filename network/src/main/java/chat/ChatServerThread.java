@@ -54,7 +54,7 @@ public class ChatServerThread extends Thread {
                     log("Closed by client");
                     break;
                 }
-                user.sendMsg(doing(data));
+                doing(data);
 
                 log("received: " + data);
             }
@@ -82,7 +82,7 @@ public class ChatServerThread extends Thread {
         return msg.split(":");
     }
 
-    private String doing(String msg) {
+    private void doing(String msg) {
         String[] data = unpacking(msg);
 
         switch (data[0]) {
@@ -95,12 +95,11 @@ public class ChatServerThread extends Thread {
                         Room r1 = user.getRoom();
                         r1.removeUser(user);
                         user.setRoom(room);
-                        return String.join(":", "SUCCESS");
                     }
                 }
             }
             case "ROOMLIST" -> {
-                return String.join(":", "ROOMLIST", roomList());
+                responseMsg(user, "ROOMLIST", roomList());
             }
             case "MAKE" -> {
                 if (searchRoom(data[1]) == null) {
@@ -108,56 +107,49 @@ public class ChatServerThread extends Thread {
                     ROOM_LIST.add(room);
                     user.getRoom().removeUser(user);
                     user.setRoom(room);
-                    return String.join(":", "SUCCESS");
                 }
             }
             case "NOW" -> {
-                return String.join(":", "NOW", user.getRoom().getRoomName());
+                responseMsg(user, "NOW", user.getRoom().getRoomName());
             }
             case "MSG" -> {
-                user.getRoom().getUsers().forEach(i -> i.sendMsg(this.user.getNickname() + "님:" + new String(Base64.getDecoder().decode(data[1]))));
-
-                return String.join(":", "SUCCESS");
+                user.getRoom().getUsers().forEach(i -> responseMsg(i, this.user.getNickname() + "님:" + new String(Base64.getDecoder().decode(data[1]))));
             }
             case "LIST" -> {
-                return String.join(":","LIST", userList());
+                responseMsg(user, "LIST", userList());
             }
             case "QUIT" -> {
                 if (user.getRoom() == DEFAULT_ROOM) {
                     DEFAULT_ROOM.removeUser(user);
-                    return String.join(":", "DISCONNECTED");
+                    responseMsg(user, "DISCONNECTED");
                 }
 
                 if (user.getRoom().getOwner() == user) {
-                    for (User user1 : user.getRoom().getUsers() ) {
+                    ROOM_LIST.remove(user.getRoom());
+                    for (User user1 : user.getRoom().getUsers()) {
                         user1.sendMsg("방이 해체 되었습니다.");
                         DEFAULT_ROOM.addUser(user1);
                         user1.setRoom(DEFAULT_ROOM);
                     }
-                    ROOM_LIST.remove(user.getRoom());
-                    user.setRoom(DEFAULT_ROOM);
-                    return String.join(":", "SUCCESS");
                 } else {
                     user.getRoom().removeUser(user);
-                    user.getRoom().getUsers().forEach(i->{
-                        i.sendMsg(user.getNickname()+"님이 나가셨습니다.");
+                    user.getRoom().getUsers().forEach(i -> {
+                        i.sendMsg(user.getNickname() + "님이 나가셨습니다.");
                     });
                     DEFAULT_ROOM.addUser(user);
                     user.setRoom(DEFAULT_ROOM);
-                    return String.join(":", "SUCCESS");
                 }
 
             }
             case "DM" -> {
-                user.getRoom().getUsers().forEach(i->{
+                user.getRoom().getUsers().forEach(i -> {
                     if (i.getNickname().equals(data[1])) {
-                        i.sendMsg(String.join(":","DM",user.getNickname(),new String(Base64.getDecoder().decode(data[2]))));
+                        responseMsg(i, "DM", user.getNickname(), new String(Base64.getDecoder().decode(data[2])));
                     }
                 });
-                return String.join(":", "SUCCESS");
             }
+            default -> responseMsg(user,"ERROR");
         }
-        return String.join(":", "ERROR");
     }
 
     private String roomList() {
@@ -183,5 +175,9 @@ public class ChatServerThread extends Thread {
             }
         }
         return null;
+    }
+
+    private void responseMsg(User user, String... args) {
+        user.sendMsg(String.join(":", args));
     }
 }
