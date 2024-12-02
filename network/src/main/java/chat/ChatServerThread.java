@@ -148,6 +148,22 @@ public class ChatServerThread extends Thread {
                     }
                 });
             }
+            case "DISCONNECT" -> {
+                if (user.getRoom().getOwner() == user) {
+                    ROOM_LIST.remove(user.getRoom());
+                    for (User user1 : user.getRoom().getUsers()) {
+                        user1.sendMsg("방이 해체 되었습니다.");
+                        DEFAULT_ROOM.addUser(user1);
+                        user1.setRoom(DEFAULT_ROOM);
+                    }
+                } else {
+                    user.getRoom().removeUser(user);
+                    user.getRoom().getUsers().forEach(i -> {
+                        i.sendMsg(user.getNickname() + "님이 나가셨습니다.");
+                    });
+                }
+                responseMsg(user, "DISCONNECTED");
+            }
             default -> responseMsg(user,"ERROR");
         }
     }

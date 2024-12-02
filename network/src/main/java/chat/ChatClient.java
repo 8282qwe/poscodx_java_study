@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Scanner;
 
@@ -16,7 +17,7 @@ public class ChatClient {
     private static final Scanner in = new Scanner(System.in);
 
 
-    public static void main(String[] args) {
+    public ChatClient() {
         Scanner scanner = null;
         Socket socket = null;
 
@@ -30,9 +31,9 @@ public class ChatClient {
 
             pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true);
 
-            // 닉네임 입력받기
+//            // 닉네임 입력받기
             System.out.print("닉네임을 설정해 주세요 : ");
-            pw.println(packing("JOIN", in.nextLine()));
+            pw.println(String.join(":","JOIN", in.nextLine()));
 
             while (true) {
                 String line = in.nextLine();
@@ -54,10 +55,6 @@ public class ChatClient {
                 if (socket != null && !socket.isClosed()) {
                     socket.close();
                 }
-
-                if (scanner != null) {
-                    scanner.close();
-                }
             } catch (IOException e) {
                 consoleLog("Error: " + e.getMessage());
             }
@@ -66,14 +63,6 @@ public class ChatClient {
 
     public static void consoleLog(String msg) {
         System.out.println("[Client] " + msg);
-    }
-
-    public static String packing(String type, String msg) {
-        switch (type.toUpperCase()) {
-            case "JOIN":
-                return String.join(":", type, msg);
-        }
-        return null;
     }
 
     public static void commandMsg(String msg) {
@@ -90,12 +79,10 @@ public class ChatClient {
                 pw.println(String.join(":", type.toUpperCase(), msg.split(" ")[1]));
             }
             case "DM" -> {
-                if (msg.split(" ").length < 2) {
+                if (msg.split(" ").length < 3) {
                     return;
                 }
-                System.out.print(msg.split(" ")[1]+"님에게 보낼 메세지를 입력하세요:");
-                String message = in.nextLine();
-                pw.println(String.join(":", type.toUpperCase(), msg.split(" ")[1],Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8))));
+                pw.println(String.join(":", type.toUpperCase(), msg.split(" ")[1], Base64.getEncoder().encodeToString(String.join(" ", Arrays.copyOfRange(msg.split(" "), 2, msg.split(" ").length)).getBytes(StandardCharsets.UTF_8))));
             }
         }
     }
