@@ -89,6 +89,14 @@ public class ChatServerThread extends Thread {
             case "JOIN" -> {
                 Room room = searchRoom(data[1]);
                 if (room != null) {
+                    if (user.getRoom().getOwner().equals(user)) {
+                        ROOM_LIST.remove(user.getRoom());
+                        user.getRoom().getUsers().forEach(i->{
+                            i.sendMsg("방이 해체 되었습니다.");
+                            DEFAULT_ROOM.addUser(i);
+                            i.setRoom(DEFAULT_ROOM);
+                        });
+                    }
                     if (!room.getUsers().contains(user)) {
                         broadcast(room);
                         room.addUser(user);
