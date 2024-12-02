@@ -159,6 +159,11 @@ public class ChatWindow {
                 while (true) {
                     String message = br.readLine();
 
+                    if (message == null) {
+                        consoleLog("End Connection!");
+                        break;
+                    }
+
                     view(message);
                 }
             } catch (IOException e) {
