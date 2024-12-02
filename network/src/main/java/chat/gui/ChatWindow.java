@@ -81,7 +81,6 @@ public class ChatWindow {
             new ChatClientThread(socket).start();
         } catch (IOException e) {
             consoleLog("ERROR: " + e.getMessage());
-            finish();
         }
     }
 
@@ -96,7 +95,7 @@ public class ChatWindow {
             textField.setText("");
             textField.requestFocus();
         }
-        ;
+
 
         if (message.startsWith("/")) {
             commandMsg(message);
@@ -118,7 +117,7 @@ public class ChatWindow {
         // quit 프로토콜 구현
         commandMsg("/DISCONNECT");
         // exit java application
-        System.exit(0);
+//        System.exit(0);
     }
 
     public static void commandMsg(String msg) {
@@ -138,7 +137,7 @@ public class ChatWindow {
                 if (msg.split(" ").length < 3) {
                     return;
                 }
-                pw.println(String.join(":", type.toUpperCase(), msg.split(" ")[1], Base64.getEncoder().encodeToString(String.join(" ",Arrays.copyOfRange(msg.split(" "), 2, msg.split(" ").length)).getBytes(StandardCharsets.UTF_8))));
+                pw.println(String.join(":", type.toUpperCase(), msg.split(" ")[1], Base64.getEncoder().encodeToString(String.join(" ", Arrays.copyOfRange(msg.split(" "), 2, msg.split(" ").length)).getBytes(StandardCharsets.UTF_8))));
             }
         }
     }
@@ -187,7 +186,7 @@ public class ChatWindow {
                 Arrays.stream(msg.split(":")[1].split(",")).forEach(ChatWindow.this::updateTextArea);
                 updateTextArea("=".repeat(16));
             } else if (msg.startsWith("DISCONNECTED")) {
-                finish();
+                System.exit(0);
             } else if (msg.startsWith("DM")) {
                 updateTextArea(msg.split(":")[1] + "님에게 온 메세지 : " + msg.split(":")[2]);
             } else if (msg.startsWith("ERROR")) {

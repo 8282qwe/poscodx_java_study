@@ -158,6 +158,7 @@ public class ChatServerThread extends Thread {
                     }
                 } else {
                     user.getRoom().removeUser(user);
+                    System.out.println(user);
                     user.getRoom().getUsers().forEach(i -> {
                         i.sendMsg(user.getNickname() + "님이 나가셨습니다.");
                     });
