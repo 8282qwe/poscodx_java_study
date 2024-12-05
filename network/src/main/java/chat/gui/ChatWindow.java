@@ -91,22 +91,18 @@ public class ChatWindow {
     private void sendMessage() {
         String message = textField.getText();
 
-        if (message.isBlank()) {
-            textField.setText("");
-            textField.requestFocus();
-        }
-
-
         if (message.startsWith("/")) {
             commandMsg(message);
-        } else {
+        } else if (!message.isBlank()) {
             pw.println(String.join(":", "MSG", Base64.getEncoder().encodeToString(message.getBytes(StandardCharsets.UTF_8))));
         }
 
+        initTextField();
+    }
+
+    private void initTextField() {
         textField.setText("");
         textField.requestFocus();
-
-        // ChatClientThread에서 서버로 부터 받은 메세지가 있음
     }
 
     private void updateTextArea(String message) {
